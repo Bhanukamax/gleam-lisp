@@ -1,2 +1,2 @@
-print "this is a glox"
-print "another line"
+(+ 2 3)
+
