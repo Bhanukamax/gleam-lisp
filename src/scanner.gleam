@@ -2,6 +2,9 @@ import gleam/string
 import gleam/io
 import gleam/list
 
+/// TODO:
+/// Need to move all the token stuff to glox/token
+/// TokenKind, Token, and token methods
 pub type TokenKind {
      LPAREN
      RPAREN
