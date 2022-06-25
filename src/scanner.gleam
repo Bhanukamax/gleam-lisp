@@ -4,12 +4,9 @@ import gleam/list
 import token.{Token, TokenAcc, new_acc, new_token} as tok
 
 /// Maybe I can use fold with
-
-
 pub fn new_nope() {
   Token(tok.NOPE, "nope")
 }
-
 
 pub fn scan(source) {
   let chars =
@@ -17,7 +14,11 @@ pub fn scan(source) {
     |> string.to_graphemes
 
   let tokens =
-    list.index_fold(chars, new_acc([new_nope()], new_nope(), chars), token_reducer)
+    list.index_fold(
+      chars,
+      new_acc([new_nope()], new_nope(), chars),
+      token_reducer,
+    )
 
   io.debug(#(">>>>> TOKENS", tokens))
 }
@@ -81,7 +82,10 @@ pub fn case_token(token: Token) {
 pub fn handle_number(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
   case acc.temp {
     Token(tok.NUMBER, value) ->
-      add_temp_token(acc, new_token(tok.NUMBER, string.concat([acc.temp.value, t])))
+      add_temp_token(
+        acc,
+        new_token(tok.NUMBER, string.concat([acc.temp.value, t])),
+      )
     _ ->
       case t {
         is_number -> add_temp_token(acc, new_token(tok.NUMBER, t))
