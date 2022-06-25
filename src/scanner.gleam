@@ -45,7 +45,7 @@ pub fn handle_complex_token(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
   case t {
     " " ->
       case acc.temp {
-        Token(kind, value) -> add_final_token(acc, new_token(kind, value))
+        Token(tok.NUMBER, value) -> add_final_token(acc, new_token(tok.NUMBER, value))
         _ -> acc
       }
     is_number -> handle_number(acc, t, index)
