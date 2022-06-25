@@ -41,28 +41,21 @@ pub fn scan(source) {
     |> io.debug
 }
 
-fn token_reducer(acc: TokenAcc, token: String) {
-
-   case token {
-        t if t == "(" -> new_acc(
-        list.append(acc.list, [new_token(LPAREN, t)]),
-        NoToken, t)
-        t if t == ")" -> acc
-        t if t == "+" -> acc 
-        t if t == "\n" -> acc
-        _ -> new_acc([new_token(LPAREN,"(")], new_token(PLUS, "+"), "" )
-
-   }
-
+pub fn add_final_token(list: TokenAcc, kind: TokenKind, value) {
+               new_acc(
+                       list.append(list.list, [new_token(kind, value)]),
+                       NoToken,
+                       value
+                )
 }
 
-
-fn scan_token(token, prev)  {
+fn token_reducer(acc: TokenAcc, token: String) {
    case token {
-        t if t == "(" -> Token(LPAREN, "(")
-        t if t == ")" -> Token(RPAREN, ")")
-        t if t == "+" -> Token(PLUS, "+") 
-        t if t == "\n" -> Token(NLINE, "\n")
-        _ -> Token(EOF, "/0")
+        t if t == "(" -> add_final_token(acc, LPAREN, t)
+        t if t == ")" -> add_final_token(acc, RPAREN, t)
+        t if t == "+" -> add_final_token(acc, PLUS, t)
+        t if t == "\n" -> acc
+        _ -> acc
    }
+
 }
