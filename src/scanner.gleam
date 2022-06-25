@@ -90,5 +90,4 @@ fn token_reducer(acc: TokenAcc, t: String) {
         "\n" -> acc
         _ -> handle_complex_token(acc, t)
    }
-
 }
