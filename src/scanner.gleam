@@ -72,13 +72,6 @@ pub fn check_next_type(acc: TokenAcc, index: Int) {
   }
 }
 
-pub fn case_token(token: Token) {
-  case token {
-    Token(kind, value) -> new_token(kind, value)
-    _ -> new_token(tok.NOPE, "")
-  }
-}
-
 pub fn handle_number(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
   case acc.temp {
     Token(tok.NUMBER, value) ->
