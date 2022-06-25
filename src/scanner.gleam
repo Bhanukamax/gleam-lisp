@@ -55,13 +55,17 @@ pub fn add_final_token(list: TokenAcc, kind: TokenKind, value) {
                 )
 }
 
+pub fn handle_complex_token(acc) {
+    acc
+}
+
 fn token_reducer(acc: TokenAcc, token: String) {
    case token {
         t if t == "(" -> add_final_token(acc, LPAREN, t)
         t if t == ")" -> add_final_token(acc, RPAREN, t)
         t if t == "+" -> add_final_token(acc, PLUS, t)
         t if t == "\n" -> acc
-        _ -> acc
+        _ -> handle_complex_token(acc)
    }
 
 }
