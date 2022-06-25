@@ -66,7 +66,8 @@ pub fn add_temp_token(acc: TokenAcc, temp: Token) -> TokenAcc {
    new_acc(acc.list, temp, acc.source)
 }
 
-pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
+pub fn handle_complex_token(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
+
    case t {
       " " ->
          case acc.temp {
@@ -74,16 +75,46 @@ pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
             _ -> acc
       }
      "0" | "1" | "2" | "3" | "4" |
-     "5" | "6" | "7" | "8" | "9" -> handle_number(acc, t, " ")
+     "5" | "6" | "7" | "8" | "9" -> handle_number(acc, t, index)
       _ -> acc
    }
 }
 
-pub fn handle_number(acc: TokenAcc, t: String, next_t: String) -> TokenAcc {
-    case acc.temp {
-         Token(kind, value) -> acc
-         _ -> add_temp_token(acc, new_token(NUMBER, t))
+pub fn is_number(t: String) -> Bool {
+    case t {
+     "0" | "1" | "2" | "3" | "4" |
+     "5" | "6" | "7" | "8" | "9" -> True
+     _ -> False
+     }
+
+}
+
+
+pub fn handle_number(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
+    let next = list.at(acc.source, index + 1)
+    io.debug(next)
+    case next {
+         Ok(a) ->
+             case acc.temp { 
+                      Token(kind, value) -> {
+                                  io.debug(#("has next", a))
+                                  case is_number(a) {
+                                       False -> add_temp_token(acc, new_token(NUMBER, t))
+                                       True -> acc
+                                  }
+                                  }
+                     _ -> {
+
+                        io.debug(#("has next", a, "current", t))
+                        case is_number(a) {
+                             False -> add_final_token(acc, new_token(NUMBER, t))
+                             True -> acc
+                        }
+                     }
+             }
+         Error(e) -> acc
     }
+
 }
 
 fn token_reducer(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
@@ -92,6 +123,6 @@ fn token_reducer(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
         ")" -> add_final_token(acc, new_token(RPAREN, t))
         "+" -> add_final_token(acc, new_token(PLUS, t))
         "\n" -> acc
-        _ -> handle_complex_token(acc, t)
+        _ -> handle_complex_token(acc, t, index)
    }
 }
