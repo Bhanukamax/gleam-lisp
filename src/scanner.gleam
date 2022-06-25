@@ -42,30 +42,40 @@ pub fn scan(source) {
 }
 
 pub fn print_token_acc(acc: TokenAcc) {
-//    io.debug(acc.list)
     acc.list
     |> list.each(fn(x) { io.debug(x) })
 }
 
-pub fn add_final_token(list: TokenAcc, kind: TokenKind, value) {
-               new_acc(
-                       list.append(list.list, [new_token(kind, value)]),
+pub fn add_final_token(list: TokenAcc, token: Token) -> TokenAcc {
+    case token {
+             Token(kind, value) ->  new_acc(
+                       list.append(list.list, [token]),
                        NoToken,
                        value
                 )
+             _ -> list
+                }
 }
 
-pub fn handle_complex_token(acc) {
-    acc
+pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
+   case t {
+      " " ->
+         case acc.temp {
+            Token(kind, value) -> add_final_token(acc, new_token(kind, value))
+            _ -> acc
+      }
+      _ -> acc
+   }
+   
 }
 
-fn token_reducer(acc: TokenAcc, token: String) {
-   case token {
-        t if t == "(" -> add_final_token(acc, LPAREN, t)
-        t if t == ")" -> add_final_token(acc, RPAREN, t)
-        t if t == "+" -> add_final_token(acc, PLUS, t)
-        t if t == "\n" -> acc
-        _ -> handle_complex_token(acc)
+fn token_reducer(acc: TokenAcc, t: String) {
+   case t {
+        "(" -> add_final_token(acc, new_token(LPAREN, t))
+        ")" -> add_final_token(acc, new_token(RPAREN, t))
+        "+" -> add_final_token(acc, new_token(PLUS, t))
+        "\n" -> acc
+        _ -> handle_complex_token(acc, t)
    }
 
 }
