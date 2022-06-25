@@ -57,6 +57,11 @@ pub fn add_final_token(list: TokenAcc, token: Token) -> TokenAcc {
                 }
 }
 
+pub fn add_temp_token(acc: TokenAcc, temp: Token) -> TokenAcc {
+// TODO: to be implemented
+   new_acc(acc.list, temp, "")
+}
+
 pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
    case t {
       " " ->
@@ -72,7 +77,8 @@ pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
 
 pub fn handle_number(acc: TokenAcc, t: String) -> TokenAcc {
     case acc.temp {
-         _ -> acc
+         Token(kind, value) -> acc
+         _ -> add_temp_token(acc, new_token(NUMBER, t))
     }
 }
 
