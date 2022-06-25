@@ -64,9 +64,16 @@ pub fn handle_complex_token(acc: TokenAcc, t: String) -> TokenAcc {
             Token(kind, value) -> add_final_token(acc, new_token(kind, value))
             _ -> acc
       }
+     "0" | "1" | "2" | "3" | "4" |
+     "5" | "6" | "7" | "8" | "9" -> handle_number(acc, t)
       _ -> acc
    }
-   
+}
+
+pub fn handle_number(acc: TokenAcc, t: String) -> TokenAcc {
+    case acc.temp {
+         _ -> acc
+    }
 }
 
 fn token_reducer(acc: TokenAcc, t: String) {
