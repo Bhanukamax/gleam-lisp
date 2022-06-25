@@ -38,7 +38,13 @@ pub fn scan(source) {
     source
     |> string.to_graphemes
     |> list.fold(new_acc([NoToken], NoToken, ""), token_reducer)
-    |> io.debug
+    |> print_token_acc
+}
+
+pub fn print_token_acc(acc: TokenAcc) {
+//    io.debug(acc.list)
+    acc.list
+    |> list.each(fn(x) { io.debug(x) })
 }
 
 pub fn add_final_token(list: TokenAcc, kind: TokenKind, value) {
