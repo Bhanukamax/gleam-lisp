@@ -1,16 +1,23 @@
 import gleam/string
 import gleam/io
 import gleam/list
-import token.{NoToken, Token, TokenAcc, new_acc, new_token} as tok
+import token.{Token, TokenAcc, new_acc, new_token} as tok
 
-/// Maybe I can use fold with 
+/// Maybe I can use fold with
+
+
+pub fn new_nope() {
+  Token(tok.NOPE, "nope")
+}
+
+
 pub fn scan(source) {
   let chars =
     source
     |> string.to_graphemes
 
   let tokens =
-    list.index_fold(chars, new_acc([NoToken], NoToken, chars), token_reducer)
+    list.index_fold(chars, new_acc([new_nope()], new_nope(), chars), token_reducer)
 
   io.debug(#(">>>>> TOKENS", tokens))
 }
@@ -23,7 +30,7 @@ pub fn print_token_acc(acc: TokenAcc) {
 pub fn add_final_token(acc: TokenAcc, token: Token) -> TokenAcc {
   case token {
     Token(kind, value) ->
-      new_acc(list.append(acc.list, [token]), NoToken, acc.source)
+      new_acc(list.append(acc.list, [token]), new_nope(), acc.source)
     _ -> acc
   }
 }
@@ -66,19 +73,15 @@ pub fn check_next_type(acc: TokenAcc, index: Int) {
 
 pub fn case_token(token: Token) {
   case token {
-    Token(kind, value) -> kind
-    _ -> tok.NOPE
+    Token(kind, value) -> new_token(kind, value)
+    _ -> new_token(tok.NOPE, "")
   }
 }
 
 pub fn handle_number(acc: TokenAcc, t: String, index: Int) -> TokenAcc {
   case acc.temp {
-    Token(kind, value) ->
-      case is_number(value) {
-        True ->
-          add_temp_token(acc, new_token(tok.NUMBER, string.concat([value, t])))
-        False -> add_final_token(acc, new_token(tok.NUMBER, t))
-      }
+    Token(tok.NUMBER, value) ->
+      add_temp_token(acc, new_token(tok.NUMBER, string.concat([acc.temp.value, t])))
     _ ->
       case t {
         is_number -> add_temp_token(acc, new_token(tok.NUMBER, t))

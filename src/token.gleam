@@ -9,7 +9,7 @@ pub type TokenKind {
   NUMBER
   FLOAT
   EOF
-NOPE
+  NOPE
 }
 
 pub type CharList =
@@ -17,7 +17,6 @@ pub type CharList =
 
 pub type Token {
   Token(kind: TokenKind, value: String)
-  NoToken
 }
 
 pub type TokenAcc {
